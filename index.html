@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style  type="text/css"> 
+    *{
+        margin: 0;
+        padding: 0;    
+    }
+    #input_box{
+        width: 400px;
+        background:white;
+        position: absolute;
+        left:50%;
+        margin-left:-200px;
+        margin-top:200px;
+        box-shadow: 0px 2px 10px #888888;
+    }
+    input{
+        width: 340px;
+        height: 50px;
+        border: 0px; 
+        margin-left: 40px;
+        font-family:Arial;
+        font-style: italic;
+        font-size: 20px;
+    }
+    input:focus{
+        outline:none;
+    }
+    input::-webkit-input-placeholder {  
+        opacity: 0.5;
+    }
+    #choose_all{
+        position: absolute;
+        width: 40px;
+        height: 50px;
+		opacity: 0.2;
+		cursor: pointer;
+		display: none;
+    }
+    i { 
+        position: absolute;
+        margin-left: 13px;
+        margin-top: 18px;
+        border: solid black;
+        border-width: 0 2px 2px 0;
+        display: inline-block;
+        padding: 4px;
+    }
+    .down {
+        transform: rotate(45deg);
+    }
+    .input_detail{
+        width: 400px;
+        height:50px;
+        background:white;
+        border-top: 1px solid gainsboro;
+    }
+    .input_detail_content{
+        width:300px;
+        height:50px;
+        line-height: 50px;
+        margin-left: 40px;
+        color: black;
+        font-family:Arial;
+        font-style: italic;
+        font-size: 20px;
+        border: 0px;
+        cursor: default;
+        resize:none;
+        overflow: hidden; 
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        transition:0.5s linear;
+    }
+    .input_detail_content_active{
+        width:300px;
+        height:50px;
+        margin-left: 40px;
+        color: black;
+        font-family:Arial;
+        font-style: italic;
+        font-size: 20px;
+        resize:none;
+        border: 0px;
+        box-shadow: 0px 0px 5px #888888 inset;
+        overflow-y: visible;
+    }
+    .input_detail_delete{
+        margin-left: 350px;
+        margin-top:-40px;
+        color: red;
+        font-family:Arial;
+        font-style: italic;
+        font-size: 15px;
+        cursor: pointer;
+        display: none;
+    }
+    .input_detail:hover .input_detail_delete{
+        display: block;
+    }
+    .input_detail_img{
+        width: 37px;
+        height: 37px;
+        background-image: url(choose.png);
+        background-size:37px 37px;
+        position:absolute;
+        margin-top:6px;
+        margin-left:1px;
+    }
+    .input_detail_img_active{
+        width: 37px;
+        height: 37px;
+        background-image: url(choosed.png);
+        background-size:37px 37px;
+        position:absolute;
+        margin-top:6px;
+        margin-left:1px;
+    }
+    #input_footer{
+        width: 400px;
+        height: 30px;
+        background:white;
+        border-top: 1px solid gainsboro;
+        display: none;
+        font-family: Arial;
+        font-size: 14px;
+        color: #888888;
+    }
+    #input_footer_count{
+        position: absolute;
+        margin-top: 5px;
+        margin-left: 10px;
+        display: inline-block;
+        cursor: default;
+    }
+    .input_footer_all{
+        position: absolute;
+        width: 25px;
+        height: 20px;
+        margin-top:5px;
+        margin-left:120px;
+        text-align: center;
+        line-height: 20px;
+        cursor: pointer;
+    }
+    .input_footer_all_actived{
+        position: absolute;
+        width: 25px;
+        height: 20px;
+        margin-top:3px;
+        margin-left:120px;
+        border-radius: 2px;
+        border: 1px solid burlywood;
+        text-align: center;
+        line-height: 20px;
+        cursor: pointer;
+    }
+    .input_footer_active{
+        position: absolute;
+        width: 45px;
+        height: 20px;
+        margin-top:5px;
+        margin-left:155px;
+        text-align: center;
+        line-height: 20px;
+        cursor: pointer;
+    }
+    .input_footer_active_actived{
+        position: absolute;
+        width: 45px;
+        height: 20px;
+        margin-top:3px;
+        margin-left:155px;
+        border-radius: 2px;
+        border: 1px solid burlywood;
+        text-align: center;
+        line-height: 20px;
+        cursor: pointer;
+    }
+    .input_footer_completed{
+        position: absolute;
+        width: 72px;
+        height: 20px;
+        margin-top:5px;
+        margin-left:210px;
+        text-align: center;
+        line-height: 20px;
+        cursor: pointer;
+    }
+    .input_footer_completed_actived{
+        position: absolute;
+        width: 72px;
+        height: 20px;
+        margin-top:3px;
+        margin-left:210px;
+        border-radius: 2px;
+        border: 1px solid burlywood;
+        text-align: center;
+        line-height: 20px;
+        cursor: pointer;
+    }
+    .input_footer_clear{
+        position: absolute;
+        width: 40px;
+        height: 20px;
+        margin-top:5px;
+        margin-left:332px;
+        text-align: center;
+        line-height: 20px;
+        cursor: pointer;
+        display: none;
+    }
+</style>
+
+<body>  
+    <div id="input_box">
+
+        <div id='choose_all'>
+            <i class="down"></i>
+        </div>
+
+        <input type="text" id='input' onKeyDown="input(event)" placeholder="what needs to be done？">
+
+        <div id='input_footer'>
+            <div id='input_footer_count'>0 items left</div>
+            <div id='input_footer_all' class='input_footer_all_actived'>All</div>
+            <div id='input_footer_active' class='input_footer_active'>Active</div>
+            <div id='input_footer_completed' class='input_footer_completed'>Completed</div>
+            <div id='input_footer_clear' class='input_footer_clear'>Clear</div>
+        </div>
+    <div>  
+</body>
+
+<script type="text/javascript">
+    /*可以封装
+    function $(id){
+        return document.getElementById(id);
+    }
+    */
+    let oInput = document.getElementById('input');
+    let oInputBox = document.getElementById('input_box');
+    let oInputFooter = document.getElementById('input_footer');
+    let oCount = document.getElementById('input_footer_count');
+    let oAll = document.getElementById('input_footer_all');
+    let oActive = document.getElementById('input_footer_active');
+    let oCompleted = document.getElementById('input_footer_completed');
+    let oClear = document.getElementById('input_footer_clear');
+	let oChooseAll = document.getElementById('choose_all');
+	
+	
+	
+
+    function input(event) {
+        if(event.keyCode == 13)      
+        {  	
+            if(oInput.value === ''){}
+            else{
+                /*创建备忘录*/
+                let div = document.createElement('div');
+                div.className = 'input_detail';
+
+                /*创建备忘录细节——单选框*/
+                let input_img = document.createElement('div');
+                input_img.className = 'input_detail_img';
+                div.appendChild(input_img);
+                     /*单击事件*/
+                input_img.addEventListener('click',function(){
+                    if(input_img.className == 'input_detail_img'){
+                        input_img.className = 'input_detail_img_active';
+                        div_number.style.textDecoration = 'line-through';
+                        div_number.style.opacity = '0.3';
+                        /*显示还剩下几个待办事项*/
+                        oCount.innerHTML = count() + ' items left';
+						showClear();
+						showActive();
+						showCompleted();
+                    }else{
+                        input_img.className = 'input_detail_img';
+                        div_number.style.textDecoration = 'none';
+                        div_number.style.opacity = '1';
+                        /*显示还剩下几个待办事项*/
+                        oCount.innerHTML = count() + ' items left';
+						showClear();
+						showActive();
+						showCompleted();
+                    }   
+                },false);
+
+                /*创建备忘录细节——内容*/
+                let div_number = document.createElement('textarea');
+                div_number.className = 'input_detail_content';
+                div_number.innerHTML = oInput.value;
+                div_number.readOnly = 'true';
+                div_number.style.outline = 'none';
+                    /*双击事件*/
+                div.addEventListener('dblclick',function(){
+                    div_number.style.opacity = '1';
+                    div_number.style.textDecoration = 'none';
+                    div_number.className = 'input_detail_content_active'; 
+                    div_number.removeAttribute('readOnly');
+                },false);
+                    /*失去焦点事件*/
+                div_number.addEventListener('blur',function(){
+                    if(input_img.className == 'input_detail_img_active'){
+                        div_number.style.textDecoration = 'line-through';
+                        div_number.style.opacity = '0.3';
+                    }
+                    div_number.className = 'input_detail_content'; 
+                    div_number.readOnly = 'true';
+					div_number.innerHTML = div_number.value;
+					if(div_number.value == ''){
+						oInputBox.removeChild(div,oInputBox.childNodes[5]);
+						showChoose();
+						/*显示还剩下几个待办事项*/
+						oCount.innerHTML = count() + ' items left';
+					}
+                },false);
+                div.appendChild(div_number);
+
+                 /*创建备忘录细节——删除*/
+                let div_delete = document.createElement('div');
+                div_delete.className = 'input_detail_delete';
+                div_delete.innerHTML = '删除';
+                div_delete.addEventListener('click',function(){
+                    oInputBox.removeChild(div,oInputBox.childNodes[5]);
+					showChoose();
+                    /*显示还剩下几个待办事项*/
+                    oCount.innerHTML = count() + ' items left';
+                },false);
+                div.appendChild(div_delete);
+				
+                oInputBox.insertBefore(div,oInputBox.childNodes[5]);  
+                oInputFooter.style.display = 'block';
+                
+                /*显示还剩下几个待办事项*/
+                oCount.innerHTML = count() + ' items left';
+				showChoose();
+            }
+        }  
+    }
+	
+	/*全选按钮监听*/
+	oChooseAll.onclick = function(){
+		if(oChooseAll.style.opacity != '1'){
+			oChooseAll.style.opacity = 1;
+			for(let i=5;i<oInputBox.childNodes.length-3;i++){
+				oInputBox.childNodes[i].childNodes[0].className ='input_detail_img_active';
+				oInputBox.childNodes[i].childNodes[1].style.textDecoration = 'line-through';
+				oInputBox.childNodes[i].childNodes[1].style.opacity = '0.3';
+			}
+			if(oActive.className == 'input_footer_active_actived'){
+				showActive();
+			}
+			if(oCompleted.className == 'input_footer_completed_actived'){
+				showCompleted();
+			}
+		}else{
+			oChooseAll.style.opacity = 0.2;
+			for(let i=5;i<oInputBox.childNodes.length-3;i++){
+				oInputBox.childNodes[i].childNodes[0].className ='input_detail_img';
+				oInputBox.childNodes[i].childNodes[1].style.textDecoration = 'none';
+				oInputBox.childNodes[i].childNodes[1].style.opacity = '1';
+			}
+			if(oActive.className == 'input_footer_active_actived'){
+				showActive();
+			}
+			if(oCompleted.className == 'input_footer_completed_actived'){
+				showCompleted();
+			}
+		}
+	}
+	
+	/*判断是否显示全选按钮*/
+	function showChoose(){
+		if(oInputBox.childNodes[5].className == 'input_detail'){
+			oChooseAll.style.display = 'block';
+		}else{
+			oChooseAll.style.display = 'none';
+		}
+	}
+	
+	/*判断单击存在时显示clear,当单击不存在时不显示clear*/
+	function showClear(){
+		/*当单击存在时显示clear*/
+		for(let i=5;i<oInputBox.childNodes.length-3;i++){
+			if(oInputBox.childNodes[i].childNodes[0].className == 'input_detail_img_active'){
+				oClear.style.display = 'block';
+				break;
+			}else{
+				oClear.style.display = 'none';
+			}
+		}		
+	}
+	
+	/*删除勾选*/
+	oClear.onclick = function(){
+		for(let i=5;i<oInputBox.childNodes.length-3;i++){
+			if(oInputBox.childNodes[i].childNodes[0].className == 'input_detail_img_active'){
+				oInputBox.removeChild(oInputBox.childNodes[i],oInputBox.childNodes[i]);
+				i--;
+			}
+		}
+		showChoose();
+		/*显示还剩下几个待办事项*/
+		oCount.innerHTML = count() + ' items left';
+	}
+	
+    /*显示全部按钮*/
+    oAll.onclick = function(){
+        if(oAll.className == 'input_footer_all'){
+			oAll.className = 'input_footer_all_actived';
+            oActive.className = 'input_footer_active';
+			oCompleted.className = 'input_footer_completed';
+            for(let i=5;i<oInputBox.childNodes.length-3;i++){
+                oInputBox.childNodes[i].style.display = 'block';
+            }
+        }
+    }
+    /*代办按钮监听*/
+	oActive.onclick = function(){
+		oActive.className = 'input_footer_active_actived';
+		oAll.className = 'input_footer_all';
+		oCompleted.className = 'input_footer_completed';
+		showActive();
+	}
+	
+	/*完成按钮监听*/
+	oCompleted.onclick = function(){
+		oCompleted.className = 'input_footer_completed_actived';
+		oAll.className = 'input_footer_all';
+		oActive.className = 'input_footer_active';
+		showCompleted();
+	}
+	
+	
+	/*显示代办按钮*/
+	function showActive(){
+		if(oActive.className == 'input_footer_active_actived'){
+			for(let i=5;i<oInputBox.childNodes.length-3;i++){
+				if(oInputBox.childNodes[i].childNodes[0].className == 'input_detail_img'){
+					oInputBox.childNodes[i].style.display = 'block';
+				}else{
+					oInputBox.childNodes[i].style.display = 'none';
+				}
+			}
+		}
+	}
+	
+	/*显示完成按钮*/
+	function showCompleted(){
+		if(oCompleted.className == 'input_footer_completed_actived'){
+			for(let i=5;i<oInputBox.childNodes.length-3;i++){
+				if(oInputBox.childNodes[i].childNodes[0].className == 'input_detail_img_active'){
+					oInputBox.childNodes[i].style.display = 'block';
+				}else{
+					oInputBox.childNodes[i].style.display = 'none';
+				}
+			}
+		}
+	}
+    /*计算还剩几个代办事项*/
+    function count(){
+        // console.log(oInputBox.childNodes[5].childNodes[0].className);
+        // console.log(oInputBox.childNodes.length);
+        var count = 0;
+        for(let i=5;i<oInputBox.childNodes.length-3;i++){
+            if(oInputBox.childNodes[i].childNodes[0].className == 'input_detail_img'){
+                count++;
+            }
+        }
+        return count;
+    } 
+    
+</script>
+</html>
+
+
+ 
